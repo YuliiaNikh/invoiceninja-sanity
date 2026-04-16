@@ -27,25 +27,29 @@ export function StepsSection({ sectionLabel, title, steps }: Props) {
       <h2 className="disp">{title}</h2>
 
       {steps && steps.length > 0 && (
-        <div className="mt-10 relative">
+        <div className="relative mt-10 before:pointer-events-none before:absolute before:left-[23px] before:top-6 before:bottom-6 before:z-0 before:w-0.5 before:bg-[#e2e8f0] before:content-['']">
           {steps.map((step, i) => (
-            <div key={step._key} className="flex gap-6 mb-10 last:mb-0 relative">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-full bg-[#2563eb] text-white flex items-center justify-center font-['Sora',sans-serif] font-bold text-lg flex-shrink-0">
-                  {step.number ?? i + 1}
-                </div>
-                {i < steps.length - 1 && <div className="w-[2px] flex-1 bg-[#e2e8f0] mt-2" />}
+            <div
+              key={step._key}
+              className="relative z-[1] flex gap-6 items-start pb-10 last:pb-0"
+            >
+              <div className="relative z-[2] flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#2563eb] font-['Sora',sans-serif] text-base font-bold text-white shadow-[0_0_0_4px_#ffffff]">
+                {step.number ?? i + 1}
               </div>
 
-              <div className="pb-2 flex-1">
-                <h3 className="font-['Sora',sans-serif] text-lg font-bold text-[#0f172a] mb-2">{step.title}</h3>
-                {step.body && <p className="text-sm text-[#64748b] leading-relaxed mb-3">{step.body}</p>}
+              <div className="min-w-0 flex-1 space-y-3 pt-2.5">
+                <h3 className="font-['Sora',sans-serif] text-lg font-bold leading-snug text-[#0f172a]">
+                  {step.title}
+                </h3>
+                {step.body && (
+                  <p className="text-[14.5px] leading-relaxed text-[#64748b]">{step.body}</p>
+                )}
                 {step.chips && step.chips.length > 0 && (
-                  <div className="flex gap-2 flex-wrap mb-3">
+                  <div className="flex flex-wrap gap-2 pt-1">
                     {step.chips.map((chip, j) => (
                       <span
                         key={stringListItemKey(chip, j)}
-                        className="text-[11px] font-medium bg-[#eff6ff] text-[#2563eb] px-3 py-1 rounded-full border border-[#bfdbfe]"
+                        className="inline-flex items-center rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3.5 py-2 text-[13px] font-medium text-[#1e293b]"
                       >
                         {asStringListItem(chip)}
                       </span>
@@ -53,7 +57,7 @@ export function StepsSection({ sectionLabel, title, steps }: Props) {
                   </div>
                 )}
                 {step.codeSnippet && (
-                  <pre className="bg-[#0a0a0a] text-white/80 text-[13px] rounded-xl p-4 overflow-x-auto font-['Courier_New',monospace]">
+                  <pre className="overflow-x-auto rounded-xl bg-[#0a0a0a] p-4 font-['Courier_New',monospace] text-[13px] text-white/80">
                     <code>{step.codeSnippet}</code>
                   </pre>
                 )}

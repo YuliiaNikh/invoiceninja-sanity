@@ -43,11 +43,30 @@ export function FeatureGrid({ sectionLabel, title, subtitle, theme = 'light', ca
                 <h3 className={`font-['Sora',sans-serif] text-base font-bold mb-2 ${isDark ? 'text-white' : 'text-[#0f172a]'}`}>
                   {card.title}
                 </h3>
-                {card.body && (
-                  <p className={`text-sm leading-relaxed ${isDark ? 'text-white/45' : 'text-[#64748b]'}`}>
-                    {card.body}
-                  </p>
-                )}
+                {card.body &&
+                  (() => {
+                    const lines = card.body
+                      .split('\n')
+                      .map((l) => l.trim())
+                      .filter(Boolean)
+                    if (lines.length > 1) {
+                      return (
+                        <ul className={`list-none flex flex-col gap-1.5 text-sm ${isDark ? 'text-white/45' : 'text-[#64748b]'}`}>
+                          {lines.map((line, idx) => (
+                            <li key={`${card._key}-${idx}`} className="flex items-start gap-2">
+                              <span className={`mt-0.5 font-bold text-xs ${isDark ? 'text-[#60a5fa]' : 'text-[#2563eb]'}`}>✓</span>
+                              <span className="leading-relaxed">{line}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                    }
+                    return (
+                      <p className={`text-sm leading-relaxed ${isDark ? 'text-white/45' : 'text-[#64748b]'}`}>
+                        {card.body}
+                      </p>
+                    )
+                  })()}
               </div>
             ))}
           </div>
