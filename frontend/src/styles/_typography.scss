@@ -1,0 +1,44 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.disp {
+  @include display-heading(24px, 40px);
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.disp--hero {
+  @include display-heading(36px, 64px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.disp--page {
+  @include display-heading(30px, 50px);
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.lbl {
+  @include section-label;
+}
+
+.lbl-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $blue;
+}
+
+.ssub {
+  font-size: 17px;
+  color: $muted;
+  max-width: 560px;
+  line-height: 1.65;
+  margin-bottom: 48px;
+}
