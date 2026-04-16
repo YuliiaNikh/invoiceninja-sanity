@@ -1,3 +1,6 @@
+import { TECH_CHIP_COLOR_HEX } from '../../../../studio/constants/techChipColors'
+import { splitHeroHeadline } from '../../utils/splitHeroHeadline'
+
 interface Cta {
   _key: string
   label: string
@@ -21,15 +24,9 @@ interface Props {
   footnote?: string
 }
 
-const chipColors: Record<string, string> = {
-  laravel: '#f05340',
-  flutter: '#54c5f8',
-  react: '#61dafb',
-  docker: '#22c55e',
-  api: '#a78bfa',
-}
-
 export function HeroSection({ label, headline, highlightedText, subtitle, ctas, techChips, footnote }: Props) {
+  const { lead, highlight } = splitHeroHeadline(headline, highlightedText)
+
   return (
     <section className="bg-[#0a0a0a] text-white pt-[88px] pb-[100px] px-6 text-center relative overflow-hidden">
       <div className="hero-glow" />
@@ -42,13 +39,13 @@ export function HeroSection({ label, headline, highlightedText, subtitle, ctas, 
         )}
 
         <h1 className="disp--hero max-w-[800px] mx-auto mb-5 text-white">
-          {headline}
-          {highlightedText && (
+          {lead}
+          {highlight ? (
             <>
-              <br />
-              <span className="text-[#60a5fa]">{highlightedText}</span>
+              {lead ? <br /> : null}
+              <span className="text-[#60a5fa]">{highlight}</span>
             </>
-          )}
+          ) : null}
         </h1>
 
         {subtitle && (
@@ -78,7 +75,9 @@ export function HeroSection({ label, headline, highlightedText, subtitle, ctas, 
         {techChips && techChips.length > 0 && (
           <div className="mt-[52px] flex items-center justify-center gap-[10px] flex-wrap">
             {techChips.map((chip) => {
-              const dotColor = chip.color ? chipColors[chip.color] || chip.color : '#2563eb'
+              const dotColor = chip.color
+                ? TECH_CHIP_COLOR_HEX[chip.color] || chip.color
+                : '#2563eb'
               return (
                 <div
                   key={chip._key}

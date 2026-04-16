@@ -14,9 +14,19 @@ export const settings = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'logoImage',
+      title: 'Logo image',
+      type: 'image',
+      description: 'Optional. Square image (e.g. 64×64 or larger) shown in the header. If empty, a default mark is used.',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
       name: 'logo',
-      title: 'Logo Text',
+      title: 'Logo label',
       type: 'string',
+      description: 'Text next to the mark (e.g. “Invoice Ninja”).',
     }),
     defineField({
       name: 'headerNav',

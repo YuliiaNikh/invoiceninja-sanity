@@ -6,6 +6,7 @@ import { Footer } from './Footer'
 
 interface Settings {
   siteName: string
+  logoImage?: {_type?: string; asset?: {_ref: string}} | null
   logo: string
   headerNav: { _key: string; label: string; href: string }[]
   headerActions: { _key: string; label: string; href: string; variant: string }[]

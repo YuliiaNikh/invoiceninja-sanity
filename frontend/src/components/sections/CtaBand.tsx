@@ -1,3 +1,5 @@
+import { splitHeroHeadline } from '../../utils/splitHeroHeadline'
+
 interface Props {
   headline: string
   highlightedText?: string
@@ -9,6 +11,8 @@ interface Props {
 }
 
 export function CtaBand({ headline, highlightedText, body, primaryCta, secondaryCta, caption, variant = 'default' }: Props) {
+  const { lead, highlight } = splitHeroHeadline(headline, highlightedText)
+
   if (variant === 'hosted') {
     return (
       <div className="sec-bg">
@@ -39,13 +43,13 @@ export function CtaBand({ headline, highlightedText, body, primaryCta, secondary
       <div className="cta-glow" />
       <div className="relative z-[1]">
         <h2 className="font-['Sora',sans-serif] text-[clamp(26px,4vw,46px)] font-bold tracking-tight leading-[1.1] max-w-[580px] mx-auto mb-4 text-white">
-          {headline}
-          {highlightedText && (
+          {lead}
+          {highlight ? (
             <>
-              <br />
-              <span className="text-[#60a5fa]">{highlightedText}</span>
+              {lead ? <br /> : null}
+              <span className="text-[#60a5fa]">{highlight}</span>
             </>
-          )}
+          ) : null}
         </h2>
         {body && <p className="text-base text-white/[0.48] mb-8">{body}</p>}
 

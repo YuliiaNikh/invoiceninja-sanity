@@ -64,17 +64,126 @@
 .wrap {
   max-width: $max-content;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 $wrap-padding-x;
 }
 
 .sec {
-  padding: 80px 0;
+  padding-block: 80px;
 }
 
 .sec-bg {
   background: $surface;
   border-top: 1px solid $border;
   border-bottom: 1px solid $border;
+}
+
+// —— Site header (aligned with html/index.html) ——
+.nav-header-inner {
+  max-width: $max-content;
+  margin: 0 auto;
+  padding: 0 $wrap-padding-x;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  font-family: 'Sora', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: $ink;
+  text-decoration: none;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.nav-logo-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: block;
+}
+
+.nav-logo-suffix {
+  font-weight: 400;
+  color: $muted;
+  font-size: 13px;
+  margin-left: 2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: $muted;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 13px;
+  border-radius: 7px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: $ink;
+    background: $surface;
+  }
+
+  &.active {
+    color: $blue;
+    font-weight: 500;
+  }
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 20px;
+}
+
+.btn-header-ghost {
+  color: $muted;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 7px;
+  transition: color 0.15s;
+
+  &:hover {
+    color: $ink;
+  }
+}
+
+.btn-header-blue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $blue;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 7px 18px;
+  border-radius: 7px;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: $blue-dark;
+  }
+}
+
+@media (max-width: 820px) {
+  .nav-links {
+    display: none;
+  }
 }
 
 .hero-glow {
