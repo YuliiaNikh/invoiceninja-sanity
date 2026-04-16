@@ -11,12 +11,14 @@ export const ctaBand = defineType({
       name: 'headline',
       title: 'Headline',
       type: 'string',
+      description: 'First part of the title only; avoid repeating the highlighted phrase here.',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'highlightedText',
       title: 'Highlighted Text',
       type: 'string',
+      description: 'Optional second line in accent color. Duplicates inside Headline are removed when rendering.',
     }),
     defineField({
       name: 'body',

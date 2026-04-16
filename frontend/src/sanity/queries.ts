@@ -1,5 +1,6 @@
 export const SETTINGS_QUERY = `*[_type == "settings"][0]{
   siteName,
+  logoImage,
   logo,
   headerNav[]{_key, label, href},
   headerActions[]{_key, label, href, variant},

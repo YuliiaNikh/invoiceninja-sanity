@@ -17,6 +17,8 @@ $radius-lg: 16px;
 $radius-pill: 100px;
 $radius-btn: 9px;
 $max-content: 1160px;
+// Horizontal inset for .wrap / nav inner: wider on tablets, capped on large screens
+$wrap-padding-x: clamp(20px, 5vw, 40px);
 $nav-height: 60px;
 $bp-sm: 500px;
 $bp-md: 820px;
