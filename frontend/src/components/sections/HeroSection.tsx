@@ -16,6 +16,8 @@ interface TechChip {
 
 interface Props {
   label?: string
+  /** Emoji in a circle before the label; omit for text-only pill (inner pages). */
+  labelIcon?: string
   headline: string
   highlightedText?: string
   subtitle?: string
@@ -24,7 +26,16 @@ interface Props {
   footnote?: string
 }
 
-export function HeroSection({ label, headline, highlightedText, subtitle, ctas, techChips, footnote }: Props) {
+export function HeroSection({
+  label,
+  labelIcon,
+  headline,
+  highlightedText,
+  subtitle,
+  ctas,
+  techChips,
+  footnote,
+}: Props) {
   const { lead, highlight } = splitHeroHeadline(headline, highlightedText)
 
   return (
@@ -32,8 +43,18 @@ export function HeroSection({ label, headline, highlightedText, subtitle, ctas, 
       <div className="hero-glow" />
       <div className="relative z-[1]">
         {label && (
-          <div className="inline-flex items-center gap-[7px] bg-[rgba(37,99,235,0.15)] border border-[rgba(37,99,235,0.35)] rounded-full px-[14px] py-[5px] pl-[7px] text-[13px] text-white/75 mb-7">
-            <div className="w-5 h-5 bg-[#2563eb] rounded-full flex items-center justify-center text-[10px]">🖥️</div>
+          <div
+            className={
+              labelIcon
+                ? 'inline-flex items-center gap-[7px] bg-[rgba(37,99,235,0.15)] border border-[rgba(37,99,235,0.35)] rounded-full px-[14px] py-[5px] pl-[7px] text-[13px] text-white/75 mb-7'
+                : 'inline-flex items-center gap-1.5 bg-[rgba(37,99,235,0.15)] border border-[rgba(37,99,235,0.3)] rounded-full px-3.5 py-1 text-xs font-medium tracking-[0.06em] uppercase text-white/70 mb-5'
+            }
+          >
+            {labelIcon ? (
+              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#2563eb] text-[10px]">
+                {labelIcon}
+              </div>
+            ) : null}
             {label}
           </div>
         )}

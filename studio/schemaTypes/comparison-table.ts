@@ -19,6 +19,19 @@ export const comparisonTable = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'firstColumnLabel',
+      title: 'First column header',
+      type: 'string',
+      description: 'Header for the first column (e.g. “Installer” or “Feature”).',
+      initialValue: 'Feature',
+    }),
+    defineField({
       name: 'columns',
       title: 'Columns',
       type: 'array',

@@ -17,6 +17,13 @@ export const heroSection = defineType({
       description: 'Small text above the headline (e.g. "Open-Source Invoicing")',
     }),
     defineField({
+      name: 'labelIcon',
+      title: 'Label icon (emoji)',
+      type: 'string',
+      description:
+        'Optional emoji shown in a circle before the label (e.g. home hero). Leave empty for inner pages that use a text-only pill.',
+    }),
+    defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
