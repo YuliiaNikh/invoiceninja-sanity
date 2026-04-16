@@ -1,8 +1,4 @@
-interface Row {
-  _key: string
-  feature: string
-  values?: string[]
-}
+import {rowCellsToDisplayTokens, type ComparisonRow} from '../../utils/comparisonTableCells'
 
 interface Props {
   sectionLabel?: string
@@ -11,12 +7,30 @@ interface Props {
   /** Header for the first column (default “Feature”; auto-installers use “Installer”). */
   firstColumnLabel?: string
   columns?: string[]
-  rows?: Row[]
+  rows?: ComparisonRow[]
+}
+
+/** Vector check in the same blue as html/auto-installers.html `.chk` (uses `currentColor`). */
+function TableCheckIcon() {
+  return (
+    <span className="chk compare-chk" role="img" aria-label="Included">
+      <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path
+          d="M1 5.5L5 9.5L13 1"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  )
 }
 
 function renderCell(val: string) {
-  if (val === '✓') return <span className="chk">✓</span>
-  if (val === '✗') return <span className="text-[#64748b]">✗</span>
+  /* Dash / cross still match html/auto-installers.html; check uses SVG icon. */
+  if (val === '✓') return <TableCheckIcon />
+  if (val === '✗') return <span className="compare-cross">✗</span>
   if (val === '—' || val === '-') return <span className="dash">—</span>
   return <span className="compare-cell-text">{val}</span>
 }
@@ -55,7 +69,7 @@ export function ComparisonTable({ sectionLabel, title, subtitle, firstColumnLabe
                 {rows.map((row) => (
                   <tr key={row._key}>
                     <td>{row.feature}</td>
-                    {row.values?.map((val, i) => (
+                    {rowCellsToDisplayTokens(row).map((val, i) => (
                       <td key={i}>{renderCell(val)}</td>
                     ))}
                   </tr>

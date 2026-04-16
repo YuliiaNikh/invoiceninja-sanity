@@ -25,6 +25,19 @@ export const faqSection = defineType({
       rows: 2,
     }),
     defineField({
+      name: 'layout',
+      title: 'Layout',
+      type: 'string',
+      initialValue: 'accordion',
+      options: {
+        list: [
+          {title: 'Accordion', value: 'accordion'},
+          {title: 'Two-column grid (static answers)', value: 'grid'},
+        ],
+        layout: 'radio',
+      },
+    }),
+    defineField({
       name: 'items',
       title: 'FAQ Items',
       type: 'array',

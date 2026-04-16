@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { client } from '../sanity/client'
 import { PAGE_QUERY } from '../sanity/queries'
 import { PageBuilder } from '../components/PageBuilder'
+import { mergePageSectionFallbacks } from '../utils/mergePageSectionFallbacks'
 
 interface PageData {
   _id: string
@@ -34,8 +35,10 @@ function PageFetch({ slug }: { slug: string }) {
           setError('Page not found')
         } else {
           setPage(data)
-          if (data.seo?.title || data.title) {
-            document.title = `${data.seo?.title || data.title} – Invoice Ninja`
+          if (data.seo?.title) {
+            document.title = data.seo.title
+          } else if (data.title) {
+            document.title = `${data.title} – Invoice Ninja`
           }
         }
       })
@@ -69,5 +72,6 @@ function PageFetch({ slug }: { slug: string }) {
     )
   }
 
-  return <PageBuilder sections={page.sections} />
+  const sections = mergePageSectionFallbacks(page.sections, slug) ?? page.sections ?? []
+  return <PageBuilder sections={sections} pageSlug={slug} />
 }

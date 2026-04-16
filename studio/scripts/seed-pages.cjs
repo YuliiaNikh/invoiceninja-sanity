@@ -5,6 +5,10 @@
  * Requires SANITY_API_WRITE_TOKEN with write access to the dataset.
  *
  *   cd studio && npm run seed:pages
+ *   (needs SANITY_API_WRITE_TOKEN)
+ *
+ * Or use your CLI login (no token file):
+ *   cd studio && npm run seed:pages:cli
  */
 
 const {createClient} = require('@sanity/client')
@@ -27,6 +31,33 @@ function faqItem(q, aText, key) {
     _key: key,
     question: q,
     answer: [blockP(aText, `${key}-a`)],
+  }
+}
+
+/** FAQ answer with inline link (matches html/pricing.html hosted question). */
+function faqItemHostedPricing(q, key) {
+  const mk = `${key}-lnk`
+  return {
+    _key: key,
+    question: q,
+    answer: [
+      {
+        _type: 'block',
+        _key: `${key}-a`,
+        style: 'normal',
+        markDefs: [{_type: 'link', _key: mk, href: 'https://invoiceninja.com'}],
+        children: [
+          {_type: 'span', _key: `${key}-s0`, text: 'Yes — ', marks: []},
+          {_type: 'span', _key: `${key}-s1`, text: 'InvoiceNinja.com', marks: [mk]},
+          {
+            _type: 'span',
+            _key: `${key}-s2`,
+            text: ' offers a fully hosted, managed version starting with a free plan. No server management required. The hosted version has its own pricing plans starting from free.',
+            marks: [],
+          },
+        ],
+      },
+    ],
   }
 }
 
@@ -59,7 +90,15 @@ function priceFeature(text, key, display) {
 }
 
 function compareRow(feature, values, key) {
-  return {_key: key, feature, values}
+  const cells = values.map((v, i) => {
+    const ck = `${key}-c${i}`
+    const s = String(v)
+    if (s === '✓') return {_type: 'comparisonCell', _key: ck, mode: 'check'}
+    if (s === '—' || s === '-') return {_type: 'comparisonCell', _key: ck, mode: 'dash'}
+    if (s === '✗') return {_type: 'comparisonCell', _key: ck, mode: 'cross'}
+    return {_type: 'comparisonCell', _key: ck, mode: 'text', text: s}
+  })
+  return {_type: 'comparisonTableRow', _key: key, feature, cells}
 }
 
 function section(key, obj) {
@@ -286,9 +325,9 @@ function buildDocuments() {
     title: 'Pricing',
     slug: {_type: 'slug', current: 'pricing'},
     seo: {
-      title: 'Pricing — Self-hosted Invoice Ninja',
+      title: 'Pricing – Invoice Ninja Self-Hosting',
       description:
-        'Self-hosting is free. Optional White Label license removes client-facing branding. Hosted plans available on InvoiceNinja.com.',
+        'Invoice Ninja is free to self-host with all features included. Optional White Label license available for $40/year to remove Invoice Ninja branding from client-facing pages.',
     },
     sections: [
       section('pr-hero', {
@@ -296,6 +335,7 @@ function buildDocuments() {
         label: 'Pricing',
         headline: 'Self-hosting is',
         highlightedText: 'free.',
+        headlineLine2: 'Always.',
         subtitle:
           'Every feature. No client limits. No invoice caps. No paywalls. One optional paid add-on for those who want a fully white-labeled experience.',
       }),
@@ -360,7 +400,7 @@ function buildDocuments() {
         title: 'What the White Label license removes',
         subtitle:
           'The White Label license removes Invoice Ninja branding from every page your clients see — so your business is the only brand they experience.',
-        theme: 'light',
+        theme: 'surface',
         cards: [
           feat('📄', 'Invoice PDF footer', 'The "Invoice Ninja" link in the footer of every generated PDF invoice is removed. Your invoice, your brand — nothing else.', 'pr-r1'),
           feat('🌐', 'Client portal', 'The client portal — where clients view invoices, make payments, and download documents — shows only your branding.', 'pr-r2'),
@@ -374,6 +414,7 @@ function buildDocuments() {
         _type: 'faqSection',
         sectionLabel: 'FAQ',
         title: 'Common questions about pricing',
+        layout: 'grid',
         items: [
           faqItem(
             'Is self-hosting really completely free?',
@@ -400,11 +441,7 @@ function buildDocuments() {
             'Yes — the White Label license applies to a single self-hosted Invoice Ninja installation. If you run multiple separate installations, each requires its own license.',
             'pr-q5',
           ),
-          faqItem(
-            'I prefer a fully hosted solution — is that available?',
-            'Yes — InvoiceNinja.com offers a fully hosted, managed version starting with a free plan. No server management required. The hosted version has its own pricing plans starting from free.',
-            'pr-q6',
-          ),
+          faqItemHostedPricing('I prefer a fully hosted solution — is that available?', 'pr-q6'),
         ],
       }),
       section('pr-hosted', {
@@ -654,7 +691,8 @@ function buildDocuments() {
         sectionLabel: 'Contribute',
         title: 'Help make Invoice Ninja better',
         subtitle: 'Invoice Ninja is source-code available and built with community input. Here are the best ways to contribute.',
-        theme: 'light',
+        theme: 'surface',
+        columnsDesktop: '4',
         cards: [
           feat('🐛', 'Report a bug', 'Found something broken? Open a GitHub issue with steps to reproduce.', 'cm-g1'),
           feat('💡', 'Request a feature', 'Have an idea? Share it on GitHub Discussions or the community forum.', 'cm-g2'),
@@ -976,7 +1014,11 @@ async function main() {
   console.log(`Done. ${docs.length} pages.`)
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+module.exports = { buildDocuments }
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}

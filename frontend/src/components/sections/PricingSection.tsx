@@ -35,11 +35,7 @@ function renderBoldSegments(text: string): ReactNode {
   return parts.map((part, i) => {
     const m = part.match(/^\*\*([^*]+)\*\*$/)
     if (m) {
-      return (
-        <strong key={i} className="font-semibold text-[#0f172a]">
-          {m[1]}
-        </strong>
-      )
+      return <strong key={i}>{m[1]}</strong>
     }
     return <span key={i}>{part}</span>
   })
@@ -64,72 +60,53 @@ export function PricingSection({ sectionLabel, title, subtitle, comparisonNote, 
       ) : null}
 
       {tiers && tiers.length > 0 && (
-        <div
-          className={`mx-auto grid max-w-4xl grid-cols-1 gap-5 ${showHeader ? 'mt-12' : ''} md:grid-cols-2`}
-        >
+        <div className={showHeader ? 'pricing-grid pricing-grid--after-heading' : 'pricing-grid'}>
           {tiers.map((tier) => (
-            <div
-              key={tier._key}
-              className={`relative flex flex-col rounded-2xl border p-7 ${
-                tier.featured
-                  ? 'border-[#2563eb] bg-[#f0f7ff] shadow-[0_4px_20px_rgba(37,99,235,0.1)]'
-                  : 'border-[#e2e8f0] bg-white'
-              }`}
-            >
-              {tier.featured && tier.badge ? (
-                <div className="absolute -top-3 left-5 rounded-full bg-[#2563eb] px-3 py-0.5 text-[11px] font-semibold text-white">
-                  {tier.badge}
-                </div>
-              ) : null}
-              {tier.tierLabel ? (
-                <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">{tier.tierLabel}</div>
-              ) : null}
-              <div className="mb-4">
-                <h3 className="font-['Sora',sans-serif] text-lg font-bold text-[#0f172a]">{tier.name}</h3>
-              </div>
+            <article key={tier._key} className={`price-card${tier.featured ? ' featured' : ''}`}>
+              {tier.featured && tier.badge ? <div className="featured-badge">{tier.badge}</div> : null}
+              {tier.tierLabel ? <div className="price-tier">{tier.tierLabel}</div> : null}
+              <div className="price-name">{tier.name}</div>
 
-              <div className="mb-6">
+              <div className="price-amount">
                 {tier.price === '$0' ? (
-                  <span className="font-['Sora',sans-serif] text-[36px] font-bold tracking-tight text-[#0f172a]">$0</span>
+                  <span className="price-num">$0</span>
                 ) : tier.price.startsWith('$') ? (
-                  <span className="font-['Sora',sans-serif] text-[36px] font-bold tracking-tight text-[#0f172a]">
-                    <span className="align-top text-2xl">$</span>
-                    {tier.price.replace(/^\$/, '')}
-                  </span>
+                  <>
+                    <span className="price-currency">$</span>
+                    <span className="price-num">{tier.price.replace(/^\$/, '')}</span>
+                  </>
                 ) : (
-                  <span className="font-['Sora',sans-serif] text-[36px] font-bold tracking-tight text-[#0f172a]">
-                    {tier.price}
-                  </span>
+                  <span className="price-num">{tier.price}</span>
                 )}
-                {tier.period && <div className="mt-1 text-sm text-[#64748b]">{tier.period}</div>}
               </div>
+              {tier.period ? <div className="price-period">{tier.period}</div> : null}
+              <div className="price-rule" />
 
               {tier.features && tier.features.length > 0 && (
-                <ul className="mb-8 flex flex-1 list-none flex-col gap-3">
+                <ul className="price-feats">
                   {tier.features.map((f, i) => {
                     const text = asStringListItem(f)
                     const disp = featureDisplay(f)
                     if (disp === 'footnote') {
                       return (
-                        <li
-                          key={stringListItemKey(f, i)}
-                          className="mt-2 border-t border-[#e2e8f0] pt-2 text-[13px] italic leading-relaxed text-[#64748b]"
-                        >
+                        <li key={stringListItemKey(f, i)} className="price-feat-footnote">
                           {text}
                         </li>
                       )
                     }
                     if (disp === 'dash') {
                       return (
-                        <li key={stringListItemKey(f, i)} className="flex items-start gap-2 text-sm text-[#1e293b]">
-                          <span className="mt-0.5 flex-shrink-0 text-[#94a3b8]">—</span>
-                          <span className="text-[#64748b]">{text}</span>
+                        <li key={stringListItemKey(f, i)}>
+                          <span className="dash" aria-hidden>
+                            —
+                          </span>
+                          <span>{text}</span>
                         </li>
                       )
                     }
                     return (
-                      <li key={stringListItemKey(f, i)} className="flex items-start gap-2 text-sm text-[#1e293b]">
-                        <span className="mt-0.5 flex-shrink-0 text-[#16a34a]">✓</span>
+                      <li key={stringListItemKey(f, i)}>
+                        <span className="chk">✓</span>
                         <span>{renderBoldSegments(text)}</span>
                       </li>
                     )
@@ -137,17 +114,17 @@ export function PricingSection({ sectionLabel, title, subtitle, comparisonNote, 
                 </ul>
               )}
 
-              {tier.cta && (
+              {tier.cta ? (
                 <a
                   href={tier.cta.href}
-                  className={tier.featured ? 'btn-primary justify-center' : 'btn-outline justify-center'}
+                  className="price-btn"
                   target={tier.cta.href?.startsWith('http') ? '_blank' : undefined}
                   rel={tier.cta.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
                 >
                   {tier.cta.label}
                 </a>
-              )}
-            </div>
+              ) : null}
+            </article>
           ))}
         </div>
       )}

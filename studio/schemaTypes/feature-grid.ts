@@ -33,6 +33,21 @@ export const featureGrid = defineType({
       description: 'Surface = gray band (sec-bg), like “What to look for” on hosting.',
     }),
     defineField({
+      name: 'columnsDesktop',
+      title: 'Columns on desktop',
+      type: 'string',
+      initialValue: '3',
+      options: {
+        list: [
+          {title: '2 columns', value: '2'},
+          {title: '3 columns', value: '3'},
+          {title: '4 columns (e.g. community “Contribute” row)', value: '4'},
+        ],
+        layout: 'radio',
+      },
+      description: 'Grid width on large screens. Community “Help make Invoice Ninja better” uses 4 to match the static HTML.',
+    }),
+    defineField({
       name: 'compactBottom',
       title: 'Compact bottom padding',
       type: 'boolean',
@@ -50,7 +65,13 @@ export const featureGrid = defineType({
           fields: [
             defineField({name: 'icon', type: 'string', description: 'Icon name or emoji'}),
             defineField({name: 'title', type: 'string', validation: (rule) => rule.required()}),
-            defineField({name: 'body', type: 'text', rows: 3}),
+            defineField({
+              name: 'body',
+              type: 'text',
+              rows: 3,
+              description:
+                'One paragraph, or several lines: each non-empty line becomes a row with a checkmark (light / surface cards).',
+            }),
             defineField({
               name: 'tags',
               title: 'Tags (codebase / dark cards)',

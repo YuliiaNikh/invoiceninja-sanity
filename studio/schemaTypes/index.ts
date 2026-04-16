@@ -8,6 +8,8 @@ import {pricingSection} from './pricing-section'
 import {faqSection} from './faq-section'
 import {cardGrid} from './card-grid'
 import {ctaBand} from './cta-band'
+import {comparisonCell} from './comparison-cell'
+import {comparisonTableRow} from './comparison-table-row'
 import {comparisonTable} from './comparison-table'
 import {stepsSection} from './steps-section'
 import {richTextSection} from './rich-text-section'
@@ -23,6 +25,8 @@ export const schemaTypes = [
   faqSection,
   cardGrid,
   ctaBand,
+  comparisonCell,
+  comparisonTableRow,
   comparisonTable,
   stepsSection,
   richTextSection,

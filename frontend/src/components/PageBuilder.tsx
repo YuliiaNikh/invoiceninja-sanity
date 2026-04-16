@@ -29,7 +29,7 @@ interface Section {
   [key: string]: unknown
 }
 
-export function PageBuilder({ sections }: { sections?: Section[] }) {
+export function PageBuilder({ sections, pageSlug }: { sections?: Section[]; pageSlug?: string }) {
   if (!sections?.length) return null
 
   return (
@@ -40,7 +40,7 @@ export function PageBuilder({ sections }: { sections?: Section[] }) {
           console.warn(`Unknown section type: ${section._type}`)
           return null
         }
-        return <Component key={section._key} {...section} />
+        return <Component key={section._key} {...section} pageSlug={pageSlug} />
       })}
     </>
   )
