@@ -11,6 +11,7 @@ export const comparisonTable = defineType({
       name: 'sectionLabel',
       title: 'Section Label',
       type: 'string',
+      description: 'Small uppercase label above the heading (optional).',
     }),
     defineField({
       name: 'title',
@@ -33,38 +34,25 @@ export const comparisonTable = defineType({
     }),
     defineField({
       name: 'columns',
-      title: 'Columns',
+      title: 'Column headers',
       type: 'array',
-      of: [defineArrayMember({type: 'string'})],
-      description: 'Column headers for the table',
+      of: [defineArrayMember({type: 'string', title: 'Column name'})],
+      description: 'One entry per data column (after the first / row-label column).',
+      validation: (rule) => rule.min(1).error('Add at least one column header'),
     }),
     defineField({
       name: 'rows',
       title: 'Rows',
       type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({name: 'feature', type: 'string', validation: (rule) => rule.required()}),
-            defineField({
-              name: 'values',
-              type: 'array',
-              of: [defineArrayMember({type: 'string'})],
-              description: 'One value per column (use "✓", "✗", or text)',
-            }),
-          ],
-          preview: {
-            select: {title: 'feature'},
-          },
-        }),
-      ],
+      description:
+        'Add a row for each line in the table. Each row needs a label and one cell per column (Text, ✓, —, or ✗).',
+      of: [defineArrayMember({type: 'comparisonTableRow'})],
     }),
   ],
   preview: {
     select: {title: 'title'},
     prepare({title}) {
-      return {title: title || 'Comparison Table', subtitle: 'Comparison Table'}
+      return {title: title || 'Comparison Table', subtitle: 'Comparison table'}
     },
   },
 })

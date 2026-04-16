@@ -1,6 +1,8 @@
 import { PortableText } from '@portabletext/react'
 import { Link } from 'react-router-dom'
 import { asStringListItem, stringListItemKey } from '../../utils/asStringListItem'
+import { installerCardDefaults } from '../../utils/installerCardDefaults'
+import { InstallerManualStrip } from './InstallerManualStrip'
 
 interface StatItem {
   _key?: string
@@ -34,6 +36,8 @@ interface Props {
   footerNote?: unknown[]
   disclaimer?: unknown[]
   band?: string
+  /** Set by PageBuilder for page-specific layout (e.g. auto-installers manual strip). */
+  pageSlug?: string
 }
 
 function PtLink({
@@ -105,13 +109,27 @@ export function CardGrid({
   footerNote,
   disclaimer,
   band = 'surface',
+  pageSlug,
 }: Props) {
   const isDark = theme === 'dark'
   const useSurfaceBand = !isDark && band !== 'none'
 
   const desktopCols = resolveDesktopColumns(columnsDesktop, variant)
-  const gridCols = desktopGridClass(desktopCols, variant)
-  const gapClass = variant === 'community' ? 'gap-5' : variant === 'partner' ? 'gap-4' : 'gap-3'
+  /** Reference html/auto-installers.html: large “installer” cards (not compact install tiles). */
+  const installerPageLayout =
+    variant === 'installer' || (variant === 'install' && desktopCols === 3)
+
+  const gridCols =
+    installerPageLayout && desktopCols === 3
+      ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+      : desktopGridClass(desktopCols, variant)
+  const gapClass = installerPageLayout
+    ? 'gap-5'
+    : variant === 'community'
+      ? 'gap-5'
+      : variant === 'partner'
+        ? 'gap-4'
+        : 'gap-3'
   const mtGrid = variant === 'community' || variant === 'partner' ? 'mt-10' : 'mt-10'
 
   const inner = (
@@ -123,10 +141,22 @@ export function CardGrid({
         </div>
       )}
       <h2 className={`disp ${isDark ? 'text-white' : ''}`}>{title}</h2>
-      {subtitle && <p className={`ssub ${isDark ? 'text-white/50' : ''} !mb-0`}>{subtitle}</p>}
+      {subtitle && (
+        <p
+          className={
+            installerPageLayout && !isDark
+              ? 'mb-0 mt-0 max-w-[620px] text-[16px] leading-[1.65] text-[#64748b]'
+              : `ssub ${isDark ? 'text-white/50' : ''} !mb-0`
+          }
+        >
+          {subtitle}
+        </p>
+      )}
 
       {cards && cards.length > 0 && (
-        <div className={`grid ${gridCols} ${gapClass} ${mtGrid}`}>
+        <div
+          className={`grid ${gridCols} ${gapClass} ${mtGrid} ${installerPageLayout ? 'items-stretch' : ''}`}
+        >
           {cards.map((card) => {
             const Wrapper = card.href && variant !== 'community' && variant !== 'partner' ? 'a' : 'div'
             const wrapperProps =
@@ -295,12 +325,33 @@ export function CardGrid({
               )
             }
 
-            if (variant === 'installer') {
-              const link = card.linkLabel || `Install ${card.name} →`
+            if (installerPageLayout) {
+              const defaults = installerCardDefaults(card.name)
+              /* On auto-installers, known platforms always use html/auto-installers.html copy. */
+              const useHtmlReference = pageSlug === 'auto-installers' && Boolean(defaults.description)
+              const iconText = useHtmlReference
+                ? defaults.icon || (card.icon && String(card.icon).trim())
+                : (card.icon && String(card.icon).trim()) || defaults.icon
+              const eyebrowText = useHtmlReference
+                ? defaults.eyebrow
+                : (card.eyebrow && String(card.eyebrow).trim()) || defaults.eyebrow
+              const descriptionText = useHtmlReference
+                ? defaults.description
+                : (card.description && String(card.description).trim()) || defaults.description
+              const tagList = useHtmlReference
+                ? defaults.tags ?? []
+                : card.tags && card.tags.length > 0
+                  ? card.tags
+                  : (defaults.tags ?? [])
+              const link = useHtmlReference
+                ? defaults.linkLabel || `Install via ${card.name} →`
+                : (card.linkLabel && String(card.linkLabel).trim()) ||
+                  defaults.linkLabel ||
+                  `Install via ${card.name} →`
               return (
                 <div
                   key={card._key}
-                  className={`relative flex flex-col rounded-2xl border bg-white p-7 transition-[box-shadow,border-color] duration-200 hover:border-[#2563eb] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] ${
+                  className={`relative flex h-full min-h-0 flex-col rounded-2xl border bg-white p-7 transition-[box-shadow,border-color] duration-200 hover:border-[#2563eb] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] ${
                     card.featured ? 'border-2 border-[#2563eb]' : 'border border-[#e2e8f0]'
                   }`}
                 >
@@ -309,31 +360,39 @@ export function CardGrid({
                       {card.badge}
                     </div>
                   ) : null}
-                  {card.icon ? <div className="mb-3.5 text-[36px] leading-none">{card.icon}</div> : null}
-                  <div className="mb-1.5 font-['Sora',sans-serif] text-lg font-bold text-[#0f172a]">{card.name}</div>
-                  {card.eyebrow ? (
+                  {iconText ? (
+                    <div className="mb-[14px] text-[36px] leading-[1.6]">{iconText}</div>
+                  ) : null}
+                  <div className="mb-1.5 font-['Sora',sans-serif] text-[18px] font-bold leading-tight text-[#0f172a]">
+                    {card.name}
+                  </div>
+                  {eyebrowText ? (
                     <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#64748b]">
-                      {card.eyebrow}
+                      {eyebrowText}
                     </div>
                   ) : null}
-                  {card.description ? (
-                    <p className="mb-0 flex-1 text-sm leading-[1.7] text-[#64748b]">{card.description}</p>
-                  ) : null}
-                  {card.tags && card.tags.length > 0 ? (
-                    <div className="mt-3.5 flex flex-wrap gap-1.5">
-                      {card.tags.map((rawTag, ti) => {
-                        const tone =
+                  {descriptionText ? (
+                    <p className="mb-0 min-h-0 flex-1 text-[14px] leading-[1.7] text-[#64748b]">{descriptionText}</p>
+                  ) : (
+                    <div className="min-h-0 flex-1" aria-hidden />
+                  )}
+                  {tagList.length > 0 ? (
+                    <div className="mt-[14px] flex flex-wrap gap-1.5">
+                      {tagList.map((rawTag, ti) => {
+                        const rawTone =
                           rawTag && typeof rawTag === 'object' && 'tone' in rawTag
-                            ? String((rawTag as { tone?: string }).tone)
-                            : 'default'
-                        const green = tone === 'green'
+                            ? (rawTag as { tone?: string | null }).tone
+                            : undefined
+                        const tone = rawTone == null || rawTone === '' ? undefined : rawTone
+                        /* html: first tag uses .inst-tag.green unless editor sets tone to "default" */
+                        const green = tone === 'green' || (ti === 0 && tone !== 'default')
                         return (
                           <span
                             key={stringListItemKey(rawTag, ti)}
                             className={
                               green
-                                ? 'rounded-full border border-[#bbf7d0] bg-[#dcfce7] px-2 py-0.5 text-[11px] font-medium text-[#16a34a]'
-                                : 'rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-2 py-0.5 text-[11px] font-medium text-[#64748b]'
+                                ? 'rounded-full border border-[#bbf7d0] bg-[#dcfce7] px-[9px] py-[3px] text-[11px] font-medium text-[#16a34a]'
+                                : 'rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-[9px] py-[3px] text-[11px] font-medium text-[#64748b]'
                             }
                           >
                             {asStringListItem(rawTag)}
@@ -347,9 +406,9 @@ export function CardGrid({
                       href={card.href}
                       target={card.href.startsWith('http') ? '_blank' : undefined}
                       rel={card.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className={`mt-[18px] inline-flex w-fit items-center gap-1 text-[13px] font-medium no-underline transition-colors ${
+                      className={`mt-[18px] inline-flex w-fit items-center gap-[5px] text-[13px] font-medium no-underline transition-colors ${
                         card.featured
-                          ? 'rounded-lg bg-[#2563eb] px-[18px] py-2.5 text-white hover:bg-[#1d4ed8]'
+                          ? 'rounded-lg bg-[#2563eb] px-[18px] py-2.5 text-white hover:bg-[#1d4ed8] hover:no-underline'
                           : 'text-[#2563eb] hover:underline'
                       }`}
                     >
@@ -377,6 +436,8 @@ export function CardGrid({
           })}
         </div>
       )}
+
+      {installerPageLayout && pageSlug === 'auto-installers' ? <InstallerManualStrip /> : null}
 
       {variant === 'integration' && footerNote && footerNote.length > 0 ? (
         <div className="mt-5 text-center text-[13px] text-[#64748b] [&_a]:font-medium [&_a]:text-[#2563eb] [&_a]:no-underline hover:[&_a]:underline [&_p]:m-0">

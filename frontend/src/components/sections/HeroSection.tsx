@@ -20,6 +20,8 @@ interface Props {
   labelIcon?: string
   headline: string
   highlightedText?: string
+  /** When set (inner pages), highlight stays inline; this renders on the next line (see pricing.html). */
+  headlineLine2?: string
   subtitle?: string
   ctas?: Cta[]
   techChips?: TechChip[]
@@ -31,15 +33,25 @@ export function HeroSection({
   labelIcon,
   headline,
   highlightedText,
+  headlineLine2,
   subtitle,
   ctas,
   techChips,
   footnote,
 }: Props) {
   const { lead, highlight } = splitHeroHeadline(headline, highlightedText)
+  const line2 = typeof headlineLine2 === 'string' ? headlineLine2.trim() : ''
+
+  const isHomeStyleHero = Boolean(
+    (techChips && techChips.length > 0) || (ctas && ctas.length > 0) || (footnote && footnote.trim().length > 0),
+  )
 
   return (
-    <section className="bg-[#0a0a0a] text-white pt-[88px] pb-[100px] px-6 text-center relative overflow-hidden">
+    <section
+      className={`bg-[#0a0a0a] text-white px-6 text-center relative overflow-hidden ${
+        isHomeStyleHero ? 'pt-[88px] pb-[100px]' : 'pt-[72px] pb-20'
+      }`}
+    >
       <div className="hero-glow" />
       <div className="relative z-[1]">
         {label && (
@@ -59,18 +71,37 @@ export function HeroSection({
           </div>
         )}
 
-        <h1 className="disp--hero max-w-[800px] mx-auto mb-5 text-white">
-          {lead}
-          {highlight ? (
+        <h1
+          className={`mx-auto text-white ${isHomeStyleHero ? 'disp--hero mb-5 max-w-[800px]' : 'disp--hero-page mb-3.5 max-w-[800px]'}`}
+        >
+          {isHomeStyleHero || !line2 ? (
             <>
-              {lead ? <br /> : null}
-              <span className="text-[#60a5fa]">{highlight}</span>
+              {lead}
+              {highlight ? (
+                <>
+                  {lead ? <br /> : null}
+                  <span className="text-[#60a5fa]">{highlight}</span>
+                </>
+              ) : null}
             </>
-          ) : null}
+          ) : (
+            <>
+              {lead}
+              {highlight ? <span className="text-[#60a5fa]">{highlight}</span> : null}
+              <br />
+              {line2}
+            </>
+          )}
         </h1>
 
         {subtitle && (
-          <p className="text-[clamp(16px,2vw,18px)] text-white/[0.52] max-w-[560px] mx-auto mb-10 leading-relaxed">
+          <p
+            className={`mx-auto text-white/[0.52] leading-relaxed ${
+              isHomeStyleHero
+                ? 'mb-10 max-w-[560px] text-[clamp(16px,2vw,18px)]'
+                : 'mb-0 max-w-[520px] text-[17px]'
+            }`}
+          >
             {subtitle}
           </p>
         )}

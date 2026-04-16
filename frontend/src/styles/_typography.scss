@@ -9,11 +9,22 @@
   letter-spacing: -0.025em;
 }
 
+/* Home hero — html/index.html `.hero h1` */
 .disp--hero {
-  @include display-heading(36px, 64px);
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(36px, 5.5vw, 64px);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.035em;
+}
+
+/* Inner pages — html/* inner `.page-hero h1` (not index home hero) */
+.disp--hero-page {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(30px, 4.5vw, 50px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 .disp--page {

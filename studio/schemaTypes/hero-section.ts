@@ -36,7 +36,14 @@ export const heroSection = defineType({
       title: 'Highlighted Text',
       type: 'string',
       description:
-        'Second line in accent color (e.g. “Your server. Your data.”). If it is accidentally duplicated inside Headline, the site will still show it once.',
+        'Accent-colored phrase. On inner pages it appears after the headline on the same line unless “Second headline line” is set (then it is inline before the line break). If duplicated inside Headline, it is shown once.',
+    }),
+    defineField({
+      name: 'headlineLine2',
+      title: 'Second headline line',
+      type: 'string',
+      description:
+        'Optional second line below the title (e.g. pricing.html: “Always.” after “Self-hosting is free.”). When set, Highlighted Text stays on the first line next to the headline.',
     }),
     defineField({
       name: 'subtitle',

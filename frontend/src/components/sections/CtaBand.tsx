@@ -16,7 +16,7 @@ export function CtaBand({ headline, highlightedText, body, primaryCta, secondary
   if (variant === 'hosted') {
     return (
       <div className="sec-bg">
-        <div className="max-w-[1160px] mx-auto px-6 py-10 flex items-center justify-between gap-8 flex-wrap max-[900px]:flex-col max-[900px]:items-start">
+        <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-8 px-6 py-10 max-[820px]:flex-col max-[820px]:items-start">
           <div>
             <h3 className="font-['Sora',sans-serif] text-xl font-bold text-[#0f172a] mb-[6px]">{headline}</h3>
             {body && <p className="text-[15px] text-[#64748b] max-w-[540px] leading-relaxed">{body}</p>}
@@ -42,7 +42,7 @@ export function CtaBand({ headline, highlightedText, body, primaryCta, secondary
     <section className="bg-[#0a0a0a] text-white text-center py-20 px-6 relative overflow-hidden">
       <div className="cta-glow" />
       <div className="relative z-[1]">
-        <h2 className="font-['Sora',sans-serif] text-[clamp(26px,4vw,46px)] font-bold tracking-tight leading-[1.1] max-w-[580px] mx-auto mb-4 text-white">
+        <h2 className="font-['Sora',sans-serif] text-[clamp(24px,3.5vw,42px)] font-bold tracking-[-0.028em] leading-[1.1] max-w-[540px] mx-auto mb-3.5 text-white">
           {lead}
           {highlight ? (
             <>
@@ -51,7 +51,7 @@ export function CtaBand({ headline, highlightedText, body, primaryCta, secondary
             </>
           ) : null}
         </h2>
-        {body && <p className="text-base text-white/[0.48] mb-8">{body}</p>}
+        {body && <p className="mb-7 text-base text-white/[0.48]">{body}</p>}
 
         <div className="flex items-center justify-center gap-3 flex-wrap">
           {primaryCta && (

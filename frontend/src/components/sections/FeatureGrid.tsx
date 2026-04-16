@@ -17,11 +17,29 @@ interface FollowLink {
   href: string
 }
 
+function parseFeatureColumns(raw: unknown): 2 | 3 | 4 {
+  const n = typeof raw === 'number' ? raw : typeof raw === 'string' ? parseInt(String(raw), 10) : NaN
+  if (n === 2 || n === 3 || n === 4) return n
+  return 3
+}
+
+/** html/community.html .contrib-grid — 4 cols desktop, 12px gap, 2 cols ≤820px, 1 col ≤500px approximated with Tailwind. */
+function featureGridGridClass(cols: 2 | 3 | 4, isDark: boolean, isSurface: boolean): string {
+  const gap = cols === 4 ? 'gap-3' : isSurface && cols === 3 ? 'gap-4' : 'gap-5'
+  const mt =
+    cols === 4 ? 'mt-8' : isDark ? 'mt-10' : isSurface && cols === 3 ? 'mt-9' : isSurface ? 'mt-8' : 'mt-12'
+  if (cols === 4) return `grid grid-cols-1 ${gap} sm:grid-cols-2 lg:grid-cols-4 ${mt}`
+  if (cols === 2) return `grid grid-cols-1 ${gap} sm:grid-cols-2 ${mt}`
+  return `grid grid-cols-1 ${gap} sm:grid-cols-2 lg:grid-cols-3 ${mt}`
+}
+
 interface Props {
   sectionLabel?: string
   title?: string
   subtitle?: string
   theme?: string
+  /** 2 / 3 / 4 columns on large screens (community “Contribute” = 4 per static HTML). */
+  columnsDesktop?: string | number
   /** Drop bottom `.sec` padding when the next section continues the same band (e.g. requirements → steps). */
   compactBottom?: boolean
   cards?: Card[]
@@ -58,6 +76,7 @@ export function FeatureGrid({
   title,
   subtitle,
   theme = 'light',
+  columnsDesktop,
   compactBottom,
   cards,
   licenseTitle,
@@ -66,6 +85,8 @@ export function FeatureGrid({
 }: Props) {
   const isDark = theme === 'dark'
   const isSurface = theme === 'surface'
+  const cols = parseFeatureColumns(columnsDesktop)
+  const gridClass = featureGridGridClass(cols, isDark, isSurface)
 
   const inner = (
     <>
@@ -76,20 +97,25 @@ export function FeatureGrid({
         </div>
       )}
       {title ? <h2 className={`disp ${isDark ? 'text-white' : ''}`}>{title}</h2> : null}
-      {subtitle && <p className={`ssub ${isDark ? 'text-white/50' : ''} ${isSurface ? '' : ''}`}>{subtitle}</p>}
+      {subtitle && (
+        <p
+          className={
+            isDark
+              ? 'ssub !mb-0 text-white/50'
+              : isSurface && cols === 3
+                ? 'mb-0 max-w-[600px] text-[16px] leading-[1.65] text-[#64748b]'
+                : 'ssub !mb-0'
+          }
+        >
+          {subtitle}
+        </p>
+      )}
 
       {cards && cards.length > 0 && (
-        <div
-          className={`grid grid-cols-1 gap-5 ${
-            isDark
-              ? 'mt-10 sm:grid-cols-2 lg:grid-cols-3'
-              : isSurface
-                ? 'mt-8 sm:grid-cols-2 lg:grid-cols-3'
-                : 'mt-12 sm:grid-cols-2 lg:grid-cols-3'
-          }`}
-        >
+        <div className={gridClass}>
           {cards.map((card) => {
             const isCodebaseCard = isDark && (Boolean(card.tags?.length) || Boolean(card.linkHref))
+            const contribTile = cols === 4 && !isDark && !isCodebaseCard
 
             if (isCodebaseCard) {
               return (
@@ -128,6 +154,38 @@ export function FeatureGrid({
               )
             }
 
+            if (contribTile) {
+              return (
+                <div
+                  key={card._key}
+                  className="flex flex-col rounded-[10px] border border-[#e2e8f0] bg-[#f8fafc] p-4 text-center transition-[box-shadow,border-color] duration-200 hover:border-[#2563eb] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+                >
+                  {card.icon ? <div className="mb-2 text-[22px] leading-[1.6]">{card.icon}</div> : null}
+                  <h3 className="mb-1 font-['Sora',sans-serif] text-[13px] font-semibold text-[#0f172a]">{card.title}</h3>
+                  {card.body &&
+                    (() => {
+                      const lines = card.body
+                        .split('\n')
+                        .map((l) => l.trim())
+                        .filter(Boolean)
+                      if (lines.length > 1) {
+                        return (
+                          <ul className="list-none flex flex-col gap-1.5 text-left text-xs text-[#64748b]">
+                            {lines.map((line, idx) => (
+                              <li key={`${card._key}-${idx}`} className="flex items-start gap-2">
+                                <span className="mt-0.5 shrink-0 text-xs font-bold text-[#2563eb]">✓</span>
+                                <span className="leading-normal">{line}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )
+                      }
+                      return <p className="text-left text-xs leading-normal text-[#64748b]">{card.body}</p>
+                    })()}
+                </div>
+              )
+            }
+
             return (
               <div
                 key={card._key}
@@ -140,7 +198,9 @@ export function FeatureGrid({
                 }
               >
                 {card.icon && (
-                  <div className={`${isSurface ? 'mb-2.5 text-2xl' : 'mb-[14px] text-[28px]'}`}>{card.icon}</div>
+                  <div className={`${isSurface ? 'mb-2.5 text-2xl leading-[1.6]' : 'mb-[14px] text-[28px] leading-[1.6]'}`}>
+                    {card.icon}
+                  </div>
                 )}
                 <h3
                   className={`font-['Sora',sans-serif] font-bold ${isSurface ? 'mb-1.5 text-sm text-[#0f172a]' : 'mb-2 text-base'} ${isDark ? 'text-white' : 'text-[#0f172a]'}`}
