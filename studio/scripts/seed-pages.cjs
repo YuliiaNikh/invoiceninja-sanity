@@ -34,8 +34,10 @@ function feat(icon, title, body, key) {
   return {_key: key, icon, title, body}
 }
 
-function tag(value, key) {
-  return {_key: key, value}
+function tag(value, key, tone) {
+  const o = {_key: key, value}
+  if (tone === 'green') o.tone = 'green'
+  return o
 }
 
 function cardInstall(icon, name, description, href, key, extra = {}) {
@@ -50,8 +52,10 @@ function stat(value, label, key) {
   return {_key: key, value, label}
 }
 
-function priceFeature(text, key) {
-  return {_key: key, value: text}
+function priceFeature(text, key, display) {
+  const o = {_key: key, value: text}
+  if (display) o.display = display
+  return o
 }
 
 function compareRow(feature, values, key) {
@@ -80,6 +84,7 @@ function buildDocuments() {
       section('idx-hero', {
         _type: 'heroSection',
         label: 'Self-host community · Source-code available',
+        labelIcon: '🖥️',
         headline: 'Your invoicing software.',
         highlightedText: 'Your server. Your data.',
         subtitle:
@@ -133,31 +138,50 @@ function buildDocuments() {
             _key: 'idx-c1',
             icon: '⚡',
             title: 'Laravel Backend',
-            body: 'The core API and server-side engine that powers everything — invoice logic, payments, user management, and data storage.\n\nTags: PHP · Laravel · MySQL · REST API',
+            body: 'The core API and server-side engine that powers everything — invoice logic, payments, user management, and data storage.',
+            tags: ['PHP', 'Laravel', 'MySQL', 'REST API'],
+            linkLabel: 'View on GitHub →',
+            linkHref: 'https://github.com/invoiceninja/invoiceninja',
           },
           {
             _key: 'idx-c2',
             icon: '📱',
             title: 'Flutter App',
-            body: 'The desktop and mobile client — a single codebase that runs natively on Windows, macOS, Linux, iOS, and Android.\n\nTags: Flutter · Dart · iOS · Android · Desktop',
+            body: 'The desktop and mobile client — a single codebase that runs natively on Windows, macOS, Linux, iOS, and Android.',
+            tags: ['Flutter', 'Dart', 'iOS', 'Android', 'Desktop'],
+            linkLabel: 'View on GitHub →',
+            linkHref: 'https://github.com/invoiceninja/admin-portal',
           },
           {
             _key: 'idx-c3',
             icon: '🌐',
             title: 'React Web App',
-            body: 'The browser-based web application — a full-featured React client for users who prefer to work directly in their browser.\n\nTags: React · TypeScript · Web',
+            body: 'The browser-based web application — a full-featured React client for users who prefer to work directly in their browser.',
+            tags: ['React', 'TypeScript', 'Web'],
+            linkLabel: 'View on GitHub →',
+            linkHref: 'https://github.com/invoiceninja/ui',
           },
         ],
-      }),
-      section('idx-license', {
-        _type: 'richTextSection',
-        sectionLabel: 'License',
-        title: 'Source-code available · Elastic License v2 (ELv2)',
-        body: [
-          blockP(
-            'Invoice Ninja is source-code available under the Elastic License v2. You are free to self-host, modify, and use Invoice Ninja for your own business. Commercial resale or offering it as a managed service to third parties requires a separate agreement. We moved from a traditional open-source license to protect the project from commercial exploitation while keeping the source code fully accessible to the self-host community.',
-            'idx-lic1',
-          ),
+        licenseTitle: 'Source-code available · Elastic License v2 (ELv2)',
+        licenseBody: [
+          {
+            _type: 'block',
+            _key: 'idx-lic1',
+            style: 'normal',
+            markDefs: [
+              {_key: 'idx-emlnk', _type: 'link', href: 'https://www.elastic.co/licensing/elastic-license'},
+            ],
+            children: [
+              {_type: 'span', _key: 'idx-lic1a', marks: [], text: 'Invoice Ninja is source-code available under the '},
+              {_type: 'span', _key: 'idx-lic1b', marks: ['idx-emlnk'], text: 'Elastic License v2'},
+              {
+                _type: 'span',
+                _key: 'idx-lic1c',
+                marks: [],
+                text: '. You are free to self-host, modify, and use Invoice Ninja for your own business. Commercial resale or offering it as a managed service to third parties requires a separate agreement. We moved from a traditional open-source license to protect the project from commercial exploitation while keeping the source code fully accessible to the self-host community.',
+              },
+            ],
+          },
         ],
       }),
       section('idx-install', {
@@ -167,6 +191,7 @@ function buildDocuments() {
         subtitle: 'Whether you prefer a manual install, Docker, or a one-click auto-installer — we have you covered.',
         theme: 'light',
         variant: 'install',
+        columnsDesktop: '4',
         cards: [
           cardInstall('📦', 'Download .tar', 'Manual installation from the release archive. Full control over your setup.', 'https://invoiceninja.github.io/en/installation/', 'idx-i1'),
           cardInstall('🐳', 'Docker', 'Deploy with Docker Compose. Recommended for most self-hosters.', 'https://hub.docker.com/r/invoiceninja/invoiceninja', 'idx-i2'),
@@ -174,7 +199,7 @@ function buildDocuments() {
           cardInstall('🐧', 'Ubuntu + Nginx', 'Step-by-step guide for Ubuntu servers with Nginx as the web server.', 'https://invoiceninja.github.io/en/self-host-installation/#ubuntu-nginx', 'idx-i4'),
           cardInstall('🎩', 'CentOS + Nginx', 'Installation guide for CentOS / RHEL environments with Nginx.', 'https://invoiceninja.github.io/en/self-host-installation/#centos-nginx', 'idx-i5'),
           cardInstall('☁️', 'Cloudron', 'Self-hosted app platform. Handles installs, updates, and backups automatically.', 'https://www.cloudron.io/store/com.invoiceninja.cloudronapp.html', 'idx-i6'),
-          cardInstall('🚀', 'Auto-installers', 'Elestio, Coolify, Umbrel, Installatron and more. See all options →', '/auto-installers', 'idx-i7', {featured: true}),
+          cardInstall('🚀', 'Auto-installers', 'Elestio, Coolify, Umbrel, Installatron and more. See all options →', '/getting-started', 'idx-i7', {featured: true}),
           cardInstall('📖', 'Full documentation', 'Complete installation and configuration docs for all environments.', 'https://invoiceninja.github.io/', 'idx-i8'),
         ],
       }),
@@ -185,6 +210,26 @@ function buildDocuments() {
         subtitle: 'Use any of these automation platforms to integrate self-hosted Invoice Ninja with hundreds of other apps — no code required.',
         theme: 'light',
         variant: 'integration',
+        band: 'none',
+        columnsDesktop: '4',
+        footerNote: [
+          {
+            _type: 'block',
+            _key: 'idx-fn1',
+            style: 'normal',
+            markDefs: [
+              {_key: 'idx-api', _type: 'link', href: 'https://invoiceninja.github.io/en/api-documentation/'},
+              {_key: 'idx-wh', _type: 'link', href: 'https://invoiceninja.github.io/en/api-documentation/#webhooks'},
+            ],
+            children: [
+              {_type: 'span', _key: 'idx-fna', marks: [], text: 'Also available: '},
+              {_type: 'span', _key: 'idx-fnb', marks: ['idx-api'], text: 'REST API'},
+              {_type: 'span', _key: 'idx-fnc', marks: [], text: ' & '},
+              {_type: 'span', _key: 'idx-fnd', marks: ['idx-wh'], text: 'Webhooks'},
+              {_type: 'span', _key: 'idx-fne', marks: [], text: ' for custom integrations.'},
+            ],
+          },
+        ],
         cards: [
           {_key: 'idx-n1', icon: '⚡', name: 'Zapier', description: 'Connect to 5,000+ apps', href: 'https://zapier.com/apps/invoice-ninja/integrations'},
           {_key: 'idx-n2', icon: '🔄', name: 'Make', description: 'Visual workflow automation', href: 'https://www.make.com/en/integrations/invoice-ninja'},
@@ -203,13 +248,14 @@ function buildDocuments() {
         subtitle: 'From installation guides to API references — the self-host community has you covered.',
         theme: 'light',
         variant: 'doc',
+        columnsDesktop: '3',
         cards: [
-          {_key: 'idx-d1', icon: '📖', name: 'User Guide', description: 'Complete documentation covering installation, configuration, and all features of Invoice Ninja v5.', href: 'https://invoiceninja.github.io/'},
-          {_key: 'idx-d2', icon: '⚙️', name: 'API Documentation', description: 'Full REST API reference. Authenticate, query, and manage every aspect of Invoice Ninja programmatically.', href: 'https://api-docs.invoicing.co/'},
-          {_key: 'idx-d3', icon: '💬', name: 'Support Forum', description: 'Join thousands of Invoice Ninja users and developers. Ask questions, share solutions, and get help.', href: 'https://forum.invoiceninja.com/'},
-          {_key: 'idx-d4', icon: '🐙', name: 'GitHub', description: 'Source code, releases, issue tracker, and contribution guidelines. Star us to stay up to date.', href: 'https://github.com/invoiceninja/invoiceninja'},
-          {_key: 'idx-d5', icon: '🐛', name: 'Feature requests & bugs', description: 'Report bugs or request features directly on GitHub. Our team actively reviews and responds to issues.', href: 'https://github.com/invoiceninja/invoiceninja/issues'},
-          {_key: 'idx-d6', icon: '📁', name: 'Legacy v4 docs', description: 'Still running Invoice Ninja v4? The legacy documentation is preserved here for reference.', href: 'https://invoiceninja.github.io/en/v4/'},
+          {_key: 'idx-d1', icon: '📖', name: 'User Guide', description: 'Complete documentation covering installation, configuration, and all features of Invoice Ninja v5.', href: 'https://invoiceninja.github.io/', linkLabel: 'Read the docs →'},
+          {_key: 'idx-d2', icon: '⚙️', name: 'API Documentation', description: 'Full REST API reference. Authenticate, query, and manage every aspect of Invoice Ninja programmatically.', href: 'https://api-docs.invoicing.co/', linkLabel: 'Explore the API →'},
+          {_key: 'idx-d3', icon: '💬', name: 'Support Forum', description: 'Join thousands of Invoice Ninja users and developers. Ask questions, share solutions, and get help.', href: 'https://forum.invoiceninja.com/', linkLabel: 'Visit the forum →'},
+          {_key: 'idx-d4', icon: '🐙', name: 'GitHub', description: 'Source code, releases, issue tracker, and contribution guidelines. Star us to stay up to date.', href: 'https://github.com/invoiceninja/invoiceninja', linkLabel: 'View on GitHub →'},
+          {_key: 'idx-d5', icon: '🐛', name: 'Feature requests & bugs', description: 'Report bugs or request features directly on GitHub. Our team actively reviews and responds to issues.', href: 'https://github.com/invoiceninja/invoiceninja/issues', linkLabel: 'Open an issue →'},
+          {_key: 'idx-d6', icon: '📁', name: 'Legacy v4 docs', description: 'Still running Invoice Ninja v4? The legacy documentation is preserved here for reference.', href: 'https://invoiceninja.github.io/en/v4/', linkLabel: 'View v4 docs →'},
         ],
       }),
       section('idx-hosted', {
@@ -255,13 +301,12 @@ function buildDocuments() {
       }),
       section('pr-price', {
         _type: 'pricingSection',
-        sectionLabel: 'Plans',
-        title: 'Self-host pricing',
-        subtitle:
-          'Both plans include every feature. The only difference is whether Invoice Ninja branding appears on client-facing pages. The free tier lists Invoice Ninja branding on client-facing pages and PDF footers; upgrade to White Label to remove it.',
+        comparisonNote:
+          'Both plans include every feature. The only difference is whether Invoice Ninja branding appears on client-facing pages.',
         tiers: [
           {
             _key: 'pr-t1',
+            tierLabel: 'Self-hosted',
             name: 'Free',
             price: '$0',
             period: 'Free forever · no credit card',
@@ -277,18 +322,24 @@ function buildDocuments() {
               priceFeature('REST API & webhooks', 'pr-f8'),
               priceFeature('Client portal', 'pr-f9'),
               priceFeature('All invoice template designs', 'pr-f10'),
+              priceFeature(
+                'Invoice Ninja branding visible on client-facing pages & PDF footers',
+                'pr-f11',
+                'dash',
+              ),
             ],
             cta: {label: '⬇ Download Free', href: 'https://github.com/invoiceninja/invoiceninja/releases/latest'},
           },
           {
             _key: 'pr-t2',
+            tierLabel: 'Self-hosted add-on',
             name: 'White Label',
             price: '$40',
             period: 'per year · auto-renews annually',
             featured: true,
             badge: 'Optional add-on',
             features: [
-              priceFeature('Everything in Free, plus:', 'pr-w0'),
+              priceFeature('**Everything in Free, plus:**', 'pr-w0'),
               priceFeature('Invoice Ninja logo removed from invoice PDF footers', 'pr-w1'),
               priceFeature('Invoice Ninja branding removed from all client-facing pages', 'pr-w2'),
               priceFeature('Client portal fully branded as your business', 'pr-w3'),
@@ -296,6 +347,7 @@ function buildDocuments() {
               priceFeature(
                 'Note: Admin-facing app UI is not affected by the White Label license — this applies to client-facing pages only.',
                 'pr-w5',
+                'footnote',
               ),
             ],
             cta: {label: 'Purchase White Label — $40/yr →', href: 'https://invoiceninja.invoiceninja.com/client/subscriptions/WJxboqNegE/purchase'},
@@ -383,8 +435,9 @@ function buildDocuments() {
     title: 'Getting Started',
     slug: {_type: 'slug', current: 'getting-started'},
     seo: {
-      title: 'Getting started — Self-host Invoice Ninja',
-      description: 'Choose your installation method and follow the steps. Most setups take under 30 minutes.',
+      title: 'Getting Started – Invoice Ninja Self-Hosting',
+      description:
+        'Step-by-step guide to self-hosting Invoice Ninja. Choose your installation method — Docker, Softaculous, manual install, or auto-installer.',
     },
     sections: [
       section('gs-hero', {
@@ -400,15 +453,16 @@ function buildDocuments() {
         title: 'Server requirements',
         subtitle: 'Make sure your server meets these requirements before installing.',
         theme: 'light',
+        compactBottom: true,
         cards: [
           feat(
-            '📋',
+            '',
             'Software requirements',
             'PHP 8.1 or higher\nMySQL 5.7+ or MariaDB 10.3+\nNginx or Apache web server\nComposer (PHP package manager)\nNode.js & NPM (for asset compilation)\nSSL certificate (recommended)',
             'gs-r1',
           ),
           feat(
-            '💻',
+            '',
             'Minimum server specs',
             '1 GB RAM (2 GB recommended)\n1 vCPU core\n20 GB storage\nUbuntu 20.04+ or CentOS 8+\nPHP extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, GD',
             'gs-r2',
@@ -419,6 +473,8 @@ function buildDocuments() {
         _type: 'stepsSection',
         sectionLabel: 'Installation steps',
         title: 'Pick your installation method',
+        subtitle: 'Choose the approach that best fits your technical comfort level and hosting environment.',
+        compactTop: true,
         steps: [
           {
             _key: 'gs-st1',
@@ -426,9 +482,14 @@ function buildDocuments() {
             title: 'Download the release',
             body: 'Download the latest Invoice Ninja release from GitHub. We recommend the pre-built .tar archive for most installations — it includes all compiled assets.',
             chips: [
-              {value: '⬇ Download v5.13.17', _key: 'gs-st1c1'},
-              {value: 'All releases →', _key: 'gs-st1c2'},
-              {value: '🐳 Docker image →', _key: 'gs-st1c3'},
+              {
+                _key: 'gs-st1c1',
+                value: '⬇ Download v5.13.17',
+                href: 'https://github.com/invoiceninja/invoiceninja/releases/latest',
+                variant: 'primary',
+              },
+              {_key: 'gs-st1c2', value: 'All releases →', href: 'https://github.com/invoiceninja/invoiceninja/releases'},
+              {_key: 'gs-st1c3', value: '🐳 Docker image →', href: 'https://hub.docker.com/r/invoiceninja/invoiceninja'},
             ],
           },
           {
@@ -437,18 +498,37 @@ function buildDocuments() {
             title: 'Choose your installation guide',
             body: 'Follow the step-by-step guide for your server environment. Our documentation covers the most common setups.',
             chips: [
-              {value: '🐧 Ubuntu + Nginx', _key: 'gs-st2c1'},
-              {value: '🎩 CentOS + Nginx', _key: 'gs-st2c2'},
-              {value: '🐳 Docker Compose', _key: 'gs-st2c3'},
-              {value: '📖 Full docs', _key: 'gs-st2c4'},
+              {
+                _key: 'gs-st2c1',
+                value: '🐧 Ubuntu + Nginx',
+                href: 'https://invoiceninja.github.io/en/self-host-installation/#ubuntu-nginx',
+                variant: 'primary',
+              },
+              {
+                _key: 'gs-st2c2',
+                value: '🎩 CentOS + Nginx',
+                href: 'https://invoiceninja.github.io/en/self-host-installation/#centos-nginx',
+              },
+              {
+                _key: 'gs-st2c3',
+                value: '🐳 Docker Compose',
+                href: 'https://invoiceninja.github.io/en/self-host-installation/#docker',
+              },
+              {_key: 'gs-st2c4', value: '📖 Full docs', href: 'https://invoiceninja.github.io/en/installation/'},
             ],
           },
           {
             _key: 'gs-st3',
             number: 3,
             title: 'Configure your environment',
-            body: 'Copy .env.example to .env and set your database credentials, app URL, and mail configuration. Run php artisan key:generate to generate your application key.',
-            chips: [{value: 'Configuration reference →', _key: 'gs-st3c1'}],
+            body: 'Copy `.env.example` to `.env` and set your database credentials, app URL, and mail configuration. Run `php artisan key:generate` to generate your application key.',
+            chips: [
+              {
+                _key: 'gs-st3c1',
+                value: 'Configuration reference →',
+                href: 'https://invoiceninja.github.io/en/self-host-configuration/',
+              },
+            ],
           },
           {
             _key: 'gs-st4',
@@ -473,6 +553,7 @@ function buildDocuments() {
           'These platforms handle the technical setup for you — ideal if you want Invoice Ninja running without touching the command line.',
         theme: 'light',
         variant: 'install',
+        columnsDesktop: '3',
         cards: [
           cardInstall('⚡', 'Softaculous', 'One-click install through cPanel or DirectAdmin. Available on most shared hosting plans.', 'https://www.softaculous.com/apps/ecommerce/Invoice_Ninja', 'gs-a1', {badge: 'Most popular'}),
           cardInstall('☂️', 'Umbrel', 'Self-hosted personal cloud. Browse the app store and install Invoice Ninja alongside other self-hosted apps.', 'https://umbrel.com/', 'gs-a2'),
@@ -522,6 +603,8 @@ function buildDocuments() {
         subtitle: "Whether you prefer forums, chat, or code — there's a place for you in the Invoice Ninja community.",
         theme: 'light',
         variant: 'community',
+        band: 'none',
+        columnsDesktop: '2',
         cards: [
           {
             _key: 'cm-c1',
@@ -531,7 +614,11 @@ function buildDocuments() {
               'The primary hub for Invoice Ninja self-hosters. Ask installation questions, share configurations, troubleshoot issues, and connect with thousands of experienced users and developers.',
             href: 'https://forum.invoiceninja.com/',
             featured: true,
-            badge: '10,000+ members · Active daily',
+            statItems: [
+              {_key: 'cm-s1', value: '10,000+', label: 'Members'},
+              {_key: 'cm-s2', value: 'Active', label: 'Daily'},
+            ],
+            linkLabel: 'Visit the forum →',
           },
           {
             _key: 'cm-c2',
@@ -540,6 +627,7 @@ function buildDocuments() {
             description:
               'Real-time chat with over 5,000 Invoice Ninja members. Get quick answers, share tips, and stay up to date with the latest news from the Invoice Ninja team.',
             href: 'https://slack.invoiceninja.com/',
+            linkLabel: 'Join on Slack →',
           },
           {
             _key: 'cm-c3',
@@ -548,7 +636,8 @@ function buildDocuments() {
             description:
               'The source code home for Invoice Ninja. Browse the codebase, report bugs, request features, contribute code, and star us to stay up to date with releases.',
             href: 'https://github.com/invoiceninja/invoiceninja',
-            tags: [tag('⭐ 9,660+ stars', 'cm-c3t')],
+            statItems: [{_key: 'cm-s3', value: '⭐ 9,660+', label: 'stars'}],
+            linkLabel: 'View on GitHub →',
           },
           {
             _key: 'cm-c4',
@@ -556,6 +645,7 @@ function buildDocuments() {
             name: 'Discord',
             description: 'Join the Invoice Ninja Discord server for community chat, developer discussions, and a more informal way to connect with other self-hosters.',
             href: 'https://discord.gg/invoiceninja',
+            linkLabel: 'Join Discord →',
           },
         ],
       }),
@@ -571,6 +661,10 @@ function buildDocuments() {
           feat('🌍', 'Translate', 'Help translate Invoice Ninja into your language via our Transifex project.', 'cm-g3'),
           feat('📖', 'Improve the docs', 'Documentation improvements are always welcome — submit a PR on GitHub.', 'cm-g4'),
         ],
+        followLinks: [
+          {_key: 'cm-fl1', label: 'Open an issue →', href: 'https://github.com/invoiceninja/invoiceninja/issues'},
+          {_key: 'cm-fl2', label: 'Contributing guide →', href: 'https://github.com/invoiceninja/invoiceninja/blob/v5-stable/CONTRIBUTING.md'},
+        ],
       }),
       section('cm-res', {
         _type: 'cardGrid',
@@ -578,10 +672,12 @@ function buildDocuments() {
         title: 'Everything the community has built',
         theme: 'light',
         variant: 'doc',
+        band: 'none',
+        columnsDesktop: '3',
         cards: [
-          {_key: 'cm-r1', icon: '📖', name: 'User guide', description: 'Complete documentation for installation, configuration, and all features.', href: 'https://invoiceninja.github.io/'},
-          {_key: 'cm-r2', icon: '⚙️', name: 'API documentation', description: 'Full REST API reference for developers building integrations.', href: 'https://api-docs.invoicing.co/'},
-          {_key: 'cm-r3', icon: '📁', name: 'Legacy v4 docs', description: 'Still running v4? The legacy documentation is preserved for reference.', href: 'https://invoiceninja.github.io/en/v4/'},
+          {_key: 'cm-r1', icon: '📖', name: 'User guide', description: 'Complete documentation for installation, configuration, and all features.', href: 'https://invoiceninja.github.io/', hideDocLink: true},
+          {_key: 'cm-r2', icon: '⚙️', name: 'API documentation', description: 'Full REST API reference for developers building integrations.', href: 'https://api-docs.invoicing.co/', hideDocLink: true},
+          {_key: 'cm-r3', icon: '📁', name: 'Legacy v4 docs', description: 'Still running v4? The legacy documentation is preserved for reference.', href: 'https://invoiceninja.github.io/en/v4/', hideDocLink: true},
         ],
       }),
       section('cm-cta', {
@@ -633,11 +729,13 @@ function buildDocuments() {
       }),
       section('ho-grid', {
         _type: 'cardGrid',
-        sectionLabel: 'Partners',
+        sectionLabel: 'Partner hosts',
         title: '13 trusted hosting providers',
         subtitle: 'All partners listed below offer environments compatible with Invoice Ninja self-hosting. Many offer 1-click installs or managed setups.',
         theme: 'light',
         variant: 'partner',
+        band: 'none',
+        columnsDesktop: '3',
         cards: partners.map(([name, description, href, tags], i) =>
           cardPartner(
             name,
@@ -647,15 +745,24 @@ function buildDocuments() {
             `ho-p${i}`,
           ),
         ),
-      }),
-      section('ho-note', {
-        _type: 'richTextSection',
-        title: '',
-        body: [
-          blockP(
-            'Note: These hosting recommendations are provided as a community resource. Invoice Ninja LLC does not receive compensation for these listings and cannot guarantee the services of any third-party provider. Pricing and features may change — please verify directly with each host. To suggest an addition or correction, contact contact@invoiceninja.com.',
-            'ho-n1',
-          ),
+        disclaimer: [
+          {
+            _type: 'block',
+            _key: 'ho-dis1',
+            style: 'normal',
+            markDefs: [{_key: 'ho-mail', _type: 'link', href: 'mailto:contact@invoiceninja.com'}],
+            children: [
+              {_type: 'span', _key: 'ho-d1a', marks: ['strong'], text: 'Note:'},
+              {
+                _type: 'span',
+                _key: 'ho-d1b',
+                marks: [],
+                text: ' These hosting recommendations are provided as a community resource. Invoice Ninja LLC does not receive compensation for these listings and cannot guarantee the services of any third-party provider. Pricing and features may change — please verify directly with each host. To suggest an addition or correction, contact ',
+              },
+              {_type: 'span', _key: 'ho-d1c', marks: ['ho-mail'], text: 'contact@invoiceninja.com'},
+              {_type: 'span', _key: 'ho-d1d', marks: [], text: '.'},
+            ],
+          },
         ],
       }),
       section('ho-tips', {
@@ -663,7 +770,7 @@ function buildDocuments() {
         sectionLabel: 'What to look for',
         title: 'Choosing the right host for Invoice Ninja',
         subtitle: 'Not sure which host to pick? Here are the key things to check.',
-        theme: 'light',
+        theme: 'surface',
         cards: [
           feat('⚙️', 'PHP 8.1+ support', 'Invoice Ninja v5 requires PHP 8.1 or higher. Confirm your host supports this before purchasing.', 'ho-t1'),
           feat('🗃️', 'MySQL or MariaDB', 'A MySQL 5.7+ or MariaDB 10.3+ database is required. Most hosting plans include this.', 'ho-t2'),
@@ -693,9 +800,9 @@ function buildDocuments() {
     title: 'Auto-Installers',
     slug: {_type: 'slug', current: 'auto-installers'},
     seo: {
-      title: 'Auto-installers — Invoice Ninja',
+      title: 'Auto-Installers – Invoice Ninja Self-Hosting',
       description:
-        'Install Invoice Ninja without the command line. Softaculous, Cloudron, Elestio, Umbrel, Installatron, Hossted, Coolify, and more.',
+        'Install Invoice Ninja on your server without touching the command line. One-click auto-installers including Softaculous, Cloudron, Elestio, Coolify, Umbrel, and more.',
     },
     sections: [
       section('ai-hero', {
@@ -713,89 +820,117 @@ function buildDocuments() {
         subtitle:
           "Whether you're running shared hosting, a VPS, a home server, or a cloud instance — there's an auto-installer that fits your environment.",
         theme: 'light',
-        variant: 'install',
+        variant: 'installer',
+        columnsDesktop: '3',
         cards: [
           {
             _key: 'ai-1',
             icon: '⚡',
             name: 'Softaculous',
+            eyebrow: 'Shared hosting · cPanel · DirectAdmin',
             description:
               'The most widely used one-click installer in web hosting. Available in cPanel and DirectAdmin on most shared hosting plans — install Invoice Ninja without touching a single config file.',
             href: 'https://www.softaculous.com/apps/ecommerce/Invoice_Ninja',
             featured: true,
             badge: 'Most popular',
-            tags: [tag('One-click', 'ai-1a'), tag('cPanel', 'ai-1b'), tag('DirectAdmin', 'ai-1c'), tag('Auto-updates', 'ai-1d'), tag('Shared hosting', 'ai-1e')],
+            linkLabel: 'Install via Softaculous →',
+            tags: [
+              tag('One-click', 'ai-1a', 'green'),
+              tag('cPanel', 'ai-1b'),
+              tag('DirectAdmin', 'ai-1c'),
+              tag('Auto-updates', 'ai-1d'),
+              tag('Shared hosting', 'ai-1e'),
+            ],
           },
           {
             _key: 'ai-2',
             icon: '☁️',
             name: 'Cloudron',
+            eyebrow: 'Self-hosted app platform · VPS',
             description:
               'Cloudron is a self-hosted app platform for your own VPS. It handles installation, updates, SSL certificates, backups, and monitoring — so you get the control of self-hosting without the maintenance overhead.',
             href: 'https://www.cloudron.io/store/com.invoiceninja.cloudronapp.html',
-            tags: [tag('Managed updates', 'ai-2a'), tag('SSL included', 'ai-2b'), tag('Backups', 'ai-2c'), tag('VPS', 'ai-2d')],
+            linkLabel: 'Install via Cloudron →',
+            tags: [tag('Managed updates', 'ai-2a', 'green'), tag('SSL included', 'ai-2b'), tag('Backups', 'ai-2c'), tag('VPS', 'ai-2d')],
           },
           {
             _key: 'ai-3',
             icon: '🚀',
             name: 'Elestio',
+            eyebrow: 'Fully managed cloud deployment',
             description:
               'Deploy a fully managed Invoice Ninja instance on Elestio in minutes. Elestio takes care of installation, configuration, encryption, backups, and live monitoring — ideal for teams who want self-hosting without DevOps.',
             href: 'https://elestio.app/invoice-ninja',
-            tags: [tag('Fully managed', 'ai-3a'), tag('Cloud', 'ai-3b'), tag('Live monitoring', 'ai-3c'), tag('Backups', 'ai-3d')],
+            linkLabel: 'Deploy on Elestio →',
+            tags: [tag('Fully managed', 'ai-3a', 'green'), tag('Cloud', 'ai-3b'), tag('Live monitoring', 'ai-3c'), tag('Backups', 'ai-3d')],
           },
           {
             _key: 'ai-4',
             icon: '☂️',
             name: 'Umbrel',
+            eyebrow: 'Home server · Personal cloud',
             description:
               'Umbrel turns your home server or Raspberry Pi into a personal cloud. Browse the Umbrel App Store and install Invoice Ninja alongside other self-hosted apps like Nextcloud, Bitwarden, and more.',
             href: 'https://umbrel.com/',
-            tags: [tag('App store', 'ai-4a'), tag('Home server', 'ai-4b'), tag('Raspberry Pi', 'ai-4c'), tag('Privacy-first', 'ai-4d')],
+            linkLabel: 'Install via Umbrel →',
+            tags: [tag('App store', 'ai-4a', 'green'), tag('Home server', 'ai-4b'), tag('Raspberry Pi', 'ai-4c'), tag('Privacy-first', 'ai-4d')],
           },
           {
             _key: 'ai-5',
             icon: '🔧',
             name: 'Installatron',
+            eyebrow: 'Auto-install & update manager',
             description:
               'Installatron Remote is a one-click solution to install and manage all of your Invoice Ninja websites. It automatically keeps Invoice Ninja up to date and secure with minimal effort on your part.',
             href: 'https://installatron.com/invoiceninja',
-            tags: [tag('Auto-updates', 'ai-5a'), tag('One-click', 'ai-5b'), tag('Multi-site', 'ai-5c'), tag('cPanel', 'ai-5d')],
+            linkLabel: 'Install via Installatron →',
+            tags: [tag('Auto-updates', 'ai-5a', 'green'), tag('One-click', 'ai-5b'), tag('Multi-site', 'ai-5c'), tag('cPanel', 'ai-5d')],
           },
           {
             _key: 'ai-6',
             icon: '🏗️',
             name: 'Hossted',
+            eyebrow: 'Managed deployment · Any cloud',
             description:
               "Deploy Invoice Ninja instantly on your own cloud with Hossted's deployment and maintenance platform. Run open-source applications on AWS, GCP, Azure, or any provider — with ongoing managed maintenance.",
             href: 'https://hossted.com',
-            tags: [tag('Any cloud provider', 'ai-6a'), tag('AWS', 'ai-6b'), tag('GCP', 'ai-6c'), tag('Managed', 'ai-6d')],
+            linkLabel: 'Deploy via Hossted →',
+            tags: [tag('Any cloud provider', 'ai-6a', 'green'), tag('AWS', 'ai-6b'), tag('GCP', 'ai-6c'), tag('Managed', 'ai-6d')],
           },
           {
             _key: 'ai-7',
             icon: '❄️',
             name: 'Coolify',
+            eyebrow: 'Self-hostable PaaS · VPS',
             description:
               'Coolify is an open-source, self-hostable alternative to Heroku and Vercel. Run it on your own VPS and use it to deploy Invoice Ninja (and other apps) with a simple, powerful interface — no complex Docker knowledge required.',
             href: 'https://coolify.io',
-            tags: [tag('Open source', 'ai-7a'), tag('Self-hostable', 'ai-7b'), tag('VPS', 'ai-7c'), tag('Docker', 'ai-7d')],
+            linkLabel: 'Deploy via Coolify →',
+            tags: [tag('Open source', 'ai-7a', 'green'), tag('Self-hostable', 'ai-7b'), tag('VPS', 'ai-7c'), tag('Docker', 'ai-7d')],
           },
         ],
       }),
       section('ai-manual', {
         _type: 'richTextSection',
+        layout: 'calloutStrip',
         title: 'Prefer a manual installation?',
         body: [
           blockP(
-            'If you want full control over every step — or need a custom server setup — follow our manual installation guides for Ubuntu + Nginx, CentOS + Nginx, or Docker Compose. View manual install guides from Getting Started.',
+            'If you want full control over every step — or need a custom server setup — follow our manual installation guides for Ubuntu + Nginx, CentOS + Nginx, or Docker Compose.',
             'ai-m1',
           ),
         ],
+        calloutCta: {
+          label: 'View manual install guides →',
+          href: '/getting-started',
+        },
       }),
       section('ai-cmp', {
         _type: 'comparisonTable',
         sectionLabel: 'Compare installers',
         title: 'Which installer is right for you?',
+        subtitle: 'Different platforms suit different environments and technical comfort levels.',
+        firstColumnLabel: 'Installer',
         columns: ['Best for', 'Auto-updates', 'SSL included', 'Backups', 'Technical level'],
         rows: [
           compareRow('Softaculous', ['Shared hosting users', '✓', '—', '—', 'Beginner'], 'ai-r1'),

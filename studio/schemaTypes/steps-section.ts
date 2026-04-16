@@ -19,6 +19,21 @@ export const stepsSection = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'text',
+      rows: 2,
+      description: 'Intro line under the title (e.g. “Choose the approach…”).',
+    }),
+    defineField({
+      name: 'compactTop',
+      title: 'Compact top padding',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        'Use when this block continues directly after another section (e.g. steps after requirements on Getting Started). Removes top padding and adds spacing before the label.',
+    }),
+    defineField({
       name: 'steps',
       title: 'Steps',
       type: 'array',
@@ -41,6 +56,26 @@ export const stepsSection = defineType({
                       type: 'string',
                       title: 'Chip',
                       validation: (rule) => rule.required(),
+                    }),
+                    defineField({
+                      name: 'href',
+                      title: 'Link URL',
+                      type: 'url',
+                      description: 'Optional. When set, the chip renders as a link.',
+                      validation: (rule) => rule.uri({allowRelative: true}),
+                    }),
+                    defineField({
+                      name: 'variant',
+                      title: 'Style',
+                      type: 'string',
+                      options: {
+                        list: [
+                          {title: 'Default', value: 'default'},
+                          {title: 'Primary (blue)', value: 'primary'},
+                        ],
+                        layout: 'radio',
+                      },
+                      initialValue: 'default',
                     }),
                   ],
                   preview: {select: {title: 'value'}},
