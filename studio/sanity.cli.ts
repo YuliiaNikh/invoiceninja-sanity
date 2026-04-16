@@ -6,4 +6,7 @@ export default defineCliConfig({
     dataset: 'production',
   },
   studioHost: 'invoiceninja',
+  deployment: {
+    appId: 'aoedoqxavdloghnb5f0ebv9d',
+  },
 })

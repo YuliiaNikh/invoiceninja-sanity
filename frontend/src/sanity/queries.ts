@@ -9,19 +9,23 @@ export const SETTINGS_QUERY = `*[_type == "settings"][0]{
   legalLinks[]{_key, label, href}
 }`
 
-export const PAGE_QUERY = `*[_type == "page" && slug.current == $slug][0]{
+// Prefer stable seed id `page-{slug}` so a duplicate Studio draft with the same slug does not win `[0]`.
+export const PAGE_QUERY = `coalesce(
+  *[_type == "page" && _id == "page-" + $slug][0],
+  *[_type == "page" && slug.current == $slug][0]
+){
   _id,
   title,
   slug,
   seo,
   sections[]{
-    _key,
-    _type,
     ...,
-    "items": items[]{
-      _key,
-      ...,
-      "answer": answer[]{...}
+    _type == "faqSection" => {
+      "items": items[]{
+        _key,
+        ...,
+        "answer": answer[]{...}
+      }
     }
   }
 }`
